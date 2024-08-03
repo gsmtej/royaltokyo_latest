@@ -316,6 +316,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value != null) {
                       if (value.trim() == "") {
                         return "Please enter valid name";
+                      }else if (value.trim().length < 5) {
+                        return "The name must be at least 5 characters.";
                       } else {
                         return null;
                       }
@@ -367,7 +369,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value != null) {
                       if (value.trim() == "") {
                         return "Please enter valid address";
-                      } else {
+                      } else if (value.trim().length < 5) {
+                        return "The address register must be at least 5 characters.";
+                      }else {
                         return null;
                       }
                     } else {
@@ -418,6 +422,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value != null) {
                       if (value.trim() == "") {
                         return "Please enter valid password";
+                      }else if(value.trim().length < 8){
+                        return "The password must be at least 8 characters.";
                       } else {
                         return null;
                       }
