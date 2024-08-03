@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "132629202659",
+    "project_id": "royal-tokyo-sushi",
+    "storage_bucket": "royal-tokyo-sushi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132629202659:android:ffe19421c302ee104127d6",
+        "android_client_info": {
+          "package_name": "be.royaltokyosushi.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXlkqrbifdgIPk39cvHlmvjbKzMFxPJRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
