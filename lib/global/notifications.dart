@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // idz
   'High Importance Notifications', // title
-   // description
+  // description
   importance: Importance.high,
 );
 
@@ -24,7 +26,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class NotificationApi {
-  static final iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  static final iosFlutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
   static final _notification = FlutterLocalNotificationsPlugin();
 
   static Future _notificationDetails() async {
@@ -44,18 +47,36 @@ class NotificationApi {
     final android = AndroidInitializationSettings('@mipmap/ic_launcher');
     final iOS = IOSInitializationSettings();
     final settings = InitializationSettings(android: android, iOS: iOS);
-    await _notification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!.createNotificationChannel(channel);
+    if (Platform.isAndroid) {
+      await _notification
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+          .createNotificationChannel(channel);
+    }
+
+    if (Platform.isIOS) {
+      await _notification
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()!
+          .requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
 
     await _notification.initialize(settings);
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    final FlutterLocalNotificationsPlugin iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    final FlutterLocalNotificationsPlugin iosFlutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
     // await iosFlutterLocalNotificationsPlugin
     //     .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -63,7 +84,8 @@ class NotificationApi {
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    NotificationSettings settingsForNotification = await messaging.requestPermission(
+    NotificationSettings settingsForNotification =
+    await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -73,7 +95,8 @@ class NotificationApi {
       sound: true,
     );
 
-    print('>>>>>>>>>>>>>>>>User granted permission: ${settingsForNotification.authorizationStatus}');
+    print(
+        '>>>>>>>>>>>>>>>>User granted permission: ${settingsForNotification.authorizationStatus}');
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       if (message.notification!.body != null) {}
@@ -83,7 +106,12 @@ class NotificationApi {
       print("event==>${event.notification}");
       print("event==>${event.data}");
       print("event==>${event.messageId}");
-      showNotification(title: event.notification!.title!, body: event.notification!.body!, payload: event.data.toString());
+      if (Platform.isAndroid) {
+        showNotification(
+            title: event.notification!.title!,
+            body: event.notification!.body!,
+            payload: event.data.toString());
+      }
     });
 
     messaging.getToken().then((token) {
